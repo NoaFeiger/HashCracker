@@ -60,6 +60,15 @@ def build_msg(name, type, _hash, length, start, end):
     return msg.encode()
 
 
+def thread_find_input():
+    ans = search_string(message)
+    if ans == "":
+        modifiedMessage = build_msg(name, type_nack, _hash, length, start, end)
+    else:
+        modifiedMessage = build_msg(name, type_ack, _hash, length, ans + 'A' * (256 - ord(length)), end)
+    serverSocket.sendto(modifiedMessage, clientAddress)
+
+
 if __name__ == "__main__":
     serverPort = 3117
     serverSocket = socket(AF_INET, SOCK_DGRAM)
@@ -73,13 +82,11 @@ if __name__ == "__main__":
         if message[32] == TYPE_DISCOVER:
             print("got discover")
             modifiedMessage = build_msg(name, type_offer, _hash, length, start, end)
+            serverSocket.sendto(modifiedMessage, clientAddress)
         elif message[32] == TYPE_REQUEST:
             print("got request")
-            ans = search_string(message)
-            if ans == "":
-                modifiedMessage = build_msg(name, type_nack, _hash, length, start, end)
-            else:
-                modifiedMessage = build_msg(name, type_ack, _hash, length, ans + 'A' * (256 - ord(length)), end)
-        serverSocket.sendto(modifiedMessage, clientAddress)
+            t = threading.Thread(target = thread_find_input)
+            threads.append(t)
+            t.start()
 
     # todo kill server when send ack or nack
