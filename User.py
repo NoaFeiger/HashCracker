@@ -12,19 +12,5 @@ def inputUser():
     return _hash, len
 #search servers with DISCOVER
 
-
-name = 'A'*32
-_hash = 'B'*32
-
-start = 256*'C'
-end = 256*'B'
-type = '\x01'
-length = '\x01'
-print(start.encode())
-msg = name+type+_hash+length+start+end
-print(msg)
-
-msg = msg.encode()
-print(msg)
-
-#msg = struct.pack('scscss', name.encode(), b'\x01', _hash.encode(), b'\x01', start.encode(), end.encode())
+str = 'viper'
+print(hashlib.sha1(str.encode()).hexdigest())
