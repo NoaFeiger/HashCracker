@@ -2,7 +2,7 @@ from socket import *
 import helper
 import time
 
-TIMEOUT_ACK = 20
+TIMEOUT_ACK = 100
 TIMEOUT_WAIT_OFFER = 1
 OFFER_TYPE = '\x02'
 

@@ -5,7 +5,7 @@ import hackathon_range_strings
 import threading
 import time
 
-TIMEOUT_PROC = 15
+TIMEOUT_PROC = 100
 
 TYPE_REQUEST = '\x03'
 
