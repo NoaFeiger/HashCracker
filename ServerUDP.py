@@ -72,7 +72,8 @@ def thread_find_input():
 if __name__ == "__main__":
     serverPort = 3117
     serverSocket = socket(AF_INET, SOCK_DGRAM)
-    serverSocket.bind(('', serverPort))
+    serverSocket.bind(('0.0.0.0', serverPort))
+
     print("The server is ready to receive")
     while 1:
         message, clientAddress = serverSocket.recvfrom(BUFSIZE)
@@ -85,8 +86,6 @@ if __name__ == "__main__":
             serverSocket.sendto(modifiedMessage, clientAddress)
         elif message[32] == TYPE_REQUEST:
             print("got request")
-            t = threading.Thread(target = thread_find_input)
+            t = threading.Thread(target=thread_find_input)
             threads.append(t)
             t.start()
-
-    # todo kill server when send ack or nack

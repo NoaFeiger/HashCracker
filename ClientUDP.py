@@ -2,6 +2,8 @@ from socket import *
 import helper
 import time
 
+TIMEOUT_ACK = 20
+TIMEOUT_WAIT_OFFER = 1
 OFFER_TYPE = '\x02'
 
 
@@ -33,16 +35,17 @@ def build_msg(name1, type1, _hash1, length1, start1, end1):
 
 
 if __name__ == "__main__":
-    serverName = ''
+    serverName = '255.255.255.255'
     serverPort = 3117
     clientSocket = socket(AF_INET, SOCK_DGRAM)
+    clientSocket.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
     _hash, length = inputUser()
     length_int = int(length)
     length = chr(length_int)
     message_DISCOVER = build_msg(name, type_discover, _hash, length, start, end)
     clientSocket.sendto(message_DISCOVER, (serverName, serverPort))
     clientSocket.settimeout(1)
-    timeout = time.time() + 2
+    timeout = time.time() + TIMEOUT_WAIT_OFFER
     while time.time() < timeout:  # 1 sec
         try:
             modifiedMessage, serverAddress = clientSocket.recvfrom(2048)
@@ -61,7 +64,7 @@ if __name__ == "__main__":
         i = i + 1
     count_ack = 0
     ans = ""
-    clientSocket.settimeout(100)
+    clientSocket.settimeout(TIMEOUT_ACK)
     while count_ack < len(address_array):  # wait to the first ack / all nack
         modifiedMessage, serverAddress = clientSocket.recvfrom(2048)
         modifiedMessage = modifiedMessage.decode()
