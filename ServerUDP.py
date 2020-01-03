@@ -3,6 +3,9 @@ from socket import *
 import hashlib
 import hackathon_range_strings
 import threading
+import time
+
+TIMEOUT_PROC = 15
 
 TYPE_REQUEST = '\x03'
 
@@ -47,7 +50,10 @@ def search_string(message):
     start_word = getFrom(message)
     end_word = getEndRange(message)
     test = hackathon_range_strings.Ranger(start_word, end_word)
+    timeout = time.time() + TIMEOUT_PROC
     for string in test.generate_all_from_to_of_len():
+        if time.time() > timeout:
+            return ""
         print(string)
         result = hashlib.sha1(string.encode()).hexdigest()
         if result == hash:
